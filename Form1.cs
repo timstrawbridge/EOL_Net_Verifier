@@ -4,11 +4,12 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace EOL_Net_Verifier
 {
@@ -53,6 +54,8 @@ namespace EOL_Net_Verifier
                     var macBytes = ni.GetPhysicalAddress().GetAddressBytes();
                     string mac = macBytes.Length == 0 ? string.Empty : BitConverter.ToString(macBytes).Replace("-", ":");
 
+                    var firstIp = ips.FirstOrDefault() ?? string.Empty;
+
                     var item = new ListViewItem(new[] {
                         ni.Name,
                         ni.Description,
@@ -60,6 +63,8 @@ namespace EOL_Net_Verifier
                         mac,
                         ipList
                     });
+
+                    item.Tag = firstIp;
 
                     lstAdapters.Items.Add(item);
                 }
@@ -73,6 +78,29 @@ namespace EOL_Net_Verifier
             catch (Exception ex)
             {
                 MessageBox.Show("Failed to enumerate network adapters: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lstAdapters_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void lstAdapters_ItemActivate(object sender, EventArgs e)
+        {
+            // Console.WriteLine("sdf");
+            // MessageBox.Show("Hey");
+            if (lstAdapters.SelectedItems.Count > 0)
+            {
+                ListViewItem item = lstAdapters.SelectedItems[0];
+                var ip = (item.Tag as string) ?? string.Empty;
+                //lblSelectedAdapter.Text = "Selected: " + ip;
+                lblSelectedNetworkAdapter.Text = ip;
             }
         }
     }
