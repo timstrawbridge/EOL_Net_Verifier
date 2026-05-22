@@ -31,16 +31,21 @@
             this.txtStart = new System.Windows.Forms.TextBox();
             this.btnScan = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.lblSelectedNetworkAdapter = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.txtEnd = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.btnRefresh = new System.Windows.Forms.Button();
             this.lstAdapters = new System.Windows.Forms.ListView();
-            this.label4 = new System.Windows.Forms.Label();
+            this.lstResults = new System.Windows.Forms.ListView();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtStart
@@ -58,10 +63,11 @@
             this.btnScan.TabIndex = 1;
             this.btnScan.Text = "Scan";
             this.btnScan.UseVisualStyleBackColor = true;
-            this.btnScan.Click += new System.EventHandler(this.button1_Click);
+            this.btnScan.Click += new System.EventHandler(this.btnScan_Click);
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnCancel);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.lblSelectedNetworkAdapter);
             this.groupBox1.Controls.Add(this.label3);
@@ -70,12 +76,22 @@
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.txtStart);
             this.groupBox1.Controls.Add(this.btnScan);
-            this.groupBox1.Location = new System.Drawing.Point(408, 8);
+            this.groupBox1.Location = new System.Drawing.Point(12, 336);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(377, 167);
+            this.groupBox1.Size = new System.Drawing.Size(377, 196);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Ping Range";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(18, 89);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(130, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "Enter last octet range";
             // 
             // lblSelectedNetworkAdapter
             // 
@@ -123,18 +139,29 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.btnRefresh);
             this.groupBox2.Controls.Add(this.lstAdapters);
             this.groupBox2.Location = new System.Drawing.Point(12, 8);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(377, 265);
+            this.groupBox2.Size = new System.Drawing.Size(377, 303);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Network Adapters";
             // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Location = new System.Drawing.Point(282, 18);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(75, 23);
+            this.btnRefresh.TabIndex = 8;
+            this.btnRefresh.Text = "Refresh";
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            // 
             // lstAdapters
             // 
             this.lstAdapters.HideSelection = false;
-            this.lstAdapters.Location = new System.Drawing.Point(17, 32);
+            this.lstAdapters.Location = new System.Drawing.Point(17, 50);
             this.lstAdapters.Name = "lstAdapters";
             this.lstAdapters.Size = new System.Drawing.Size(340, 209);
             this.lstAdapters.TabIndex = 0;
@@ -142,21 +169,40 @@
             this.lstAdapters.ItemActivate += new System.EventHandler(this.lstAdapters_ItemActivate);
             this.lstAdapters.SelectedIndexChanged += new System.EventHandler(this.lstAdapters_SelectedIndexChanged);
             // 
-            // label4
+            // lstResults
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(18, 89);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(130, 13);
-            this.label4.TabIndex = 7;
-            this.label4.Text = "Enter last octet range";
+            this.lstResults.HideSelection = false;
+            this.lstResults.Location = new System.Drawing.Point(20, 32);
+            this.lstResults.Name = "lstResults";
+            this.lstResults.Size = new System.Drawing.Size(338, 470);
+            this.lstResults.TabIndex = 4;
+            this.lstResults.UseCompatibleStateImageBehavior = false;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.lstResults);
+            this.groupBox3.Location = new System.Drawing.Point(410, 8);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(377, 519);
+            this.groupBox3.TabIndex = 5;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Results";
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(263, 157);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.TabIndex = 8;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(799, 544);
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "Form1";
@@ -165,6 +211,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -182,6 +229,10 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblSelectedNetworkAdapter;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.ListView lstResults;
+        private System.Windows.Forms.GroupBox groupBox3;
     }
 }
 
