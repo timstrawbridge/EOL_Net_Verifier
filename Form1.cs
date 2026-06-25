@@ -174,6 +174,7 @@ namespace EOL_Net_Verifier
             lstResults.Columns.Clear();
             lstResults.Columns.Add("Address", 120);
             lstResults.Columns.Add("Hostname", 200);
+            lstResults.Columns.Add("MAC", 120);
             lstResults.Columns.Add("Alive", 60);
             lstResults.Columns.Add("RTT ms", 80);
             lstResults.Items.Clear();
@@ -190,12 +191,13 @@ namespace EOL_Net_Verifier
                     {
                         this.BeginInvoke((Action)(() =>
                         {
-                            var item = new ListViewItem(new[] { res.Address, res.Hostname, res.IsAlive ? "Yes" : "No", res.RoundtripTime.ToString() });
+                            var item = new ListViewItem(new[] { res.Address, res.Hostname, res.MacAddress, res.IsAlive ? "Yes" : "No", res.RoundtripTime.ToString() });
                             lstResults.Items.Add(item);
                             lstResults.AutoResizeColumn(0, ColumnHeaderAutoResizeStyle.ColumnContent);
                             lstResults.AutoResizeColumn(1, ColumnHeaderAutoResizeStyle.ColumnContent);
                             lstResults.AutoResizeColumn(2, ColumnHeaderAutoResizeStyle.ColumnContent);
                             lstResults.AutoResizeColumn(3, ColumnHeaderAutoResizeStyle.ColumnContent);
+                            lstResults.AutoResizeColumn(4, ColumnHeaderAutoResizeStyle.ColumnContent);
                             // keep list sorted so alive hosts appear first
                             lstResults.Sort();
                         }));

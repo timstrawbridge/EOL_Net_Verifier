@@ -14,15 +14,19 @@ namespace EOL_Net_Verifier
         public bool IsAlive { get; }
         public long RoundtripTime { get; }
         public string Hostname { get; }
+        public string MacAddress { get; }
 
-        public ScanResult(string address, bool isAlive, long rtt, string hostname = "")
+        public ScanResult(string address, bool isAlive, long rtt, string hostname = "", string macAddress = "")
         {
             Address = address;
             IsAlive = isAlive;
             RoundtripTime = rtt;
             Hostname = hostname ?? string.Empty;
+            MacAddress = macAddress ?? string.Empty;
         }
     }
+
+    
 
     public class IpScanner
     {
@@ -74,6 +78,7 @@ namespace EOL_Net_Verifier
                             {
                                 var reply = await ping.SendPingAsync(address, timeout).ConfigureAwait(false);
                                 string hostname = string.Empty;
+                                string macAddress = string.Empty;
                                 if (reply.Status == IPStatus.Success)
                                 {
                                     try
@@ -85,15 +90,17 @@ namespace EOL_Net_Verifier
                                     {
                                         hostname = string.Empty;
                                     }
+                                    // Get MAC address from ARP
+                                    macAddress = GetMacAddressFromArp(address);
                                 }
 
-                                var res = new ScanResult(address, reply.Status == IPStatus.Success, reply.RoundtripTime, hostname);
+                                var res = new ScanResult(address, reply.Status == IPStatus.Success, reply.RoundtripTime, hostname, macAddress);
                                 lock (locker) results.Add(res);
                                 onResult?.Invoke(res);
                             }
                             catch
                             {
-                                var res = new ScanResult(address, false, -1);
+                                var res = new ScanResult(address, false, -1, string.Empty, string.Empty);
                                 lock (locker) results.Add(res);
                                 onResult?.Invoke(res);
                             }
@@ -111,6 +118,29 @@ namespace EOL_Net_Verifier
             await Task.WhenAll(tasks).ConfigureAwait(false);
 
             return results.OrderBy(r => r.Address, StringComparer.Ordinal).ToList();
+        }
+        public static string GetMacAddressFromArp(string ipAddress)
+        {
+            try
+            {
+                var psi = new System.Diagnostics.ProcessStartInfo("arp", "-a " + ipAddress)
+                {
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                using (var process = System.Diagnostics.Process.Start(psi))
+                {
+                    string output = process.StandardOutput.ReadToEnd();
+                    process.WaitForExit();
+                    var regex = new System.Text.RegularExpressions.Regex(@"([0-9A-Fa-f]{2}[-:]){5}([0-9A-Fa-f]{2})");
+                    var match = regex.Match(output);
+                    if (match.Success)
+                        return match.Value;
+                }
+            }
+            catch { }
+            return string.Empty;
         }
     }
 }
